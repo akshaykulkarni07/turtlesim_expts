@@ -1,22 +1,4 @@
-#include "ros/ros.h"
-#include "geometry_msgs/Twist.h"
-#include <math.h>
-#include <sstream>
-#include "turtlesim/Pose.h"
-#include <string>
-
-using namespace std;
-
-// global variables declaration
-ros :: Publisher vel_pub;
-ros :: Subscriber pose_sub;
-turtlesim :: Pose current_pose;
-// function declarations
-double degreesToRadians(double);
-double distance(double, double, double, double);
-geometry_msgs :: Twist returnVelocity(double, double);
-void turn(double, double);
-void moveToGoal(turtlesim :: Pose, double);
+#include "movement.h"
 
 // called whenever there is a new message on the pose topic of turtle
 void poseCallback(const turtlesim :: Pose :: ConstPtr& pose)
@@ -32,24 +14,24 @@ void poseCallback(const turtlesim :: Pose :: ConstPtr& pose)
      return;
 }
 
-int main(int argc, char **argv)
-{
-     ros :: init(argc, argv, "movement");
-     ros :: NodeHandle n;
-     // subscribe to turtle's pose topic
-     pose_sub = n.subscribe<turtlesim :: Pose>("/turtle1/pose", 1000, poseCallback);
-     // publisher for velocity of turtle
-     vel_pub = n.advertise<geometry_msgs :: Twist>("/turtle1/cmd_vel", 1000);
-     // loop.sleep() will produce a delay of 0.1 sec i.e. 10Hz frequency
-     ros :: Rate loop_rate(10);
-
-     turtlesim :: Pose goal_pose;
-     goal_pose.x = (double)4;
-     goal_pose.y = (double)1;
-     moveToGoal(goal_pose, 1e-2);
-     turn(310, 1e-4);
-     return 0;
-}
+// int main(int argc, char **argv)
+// {
+//      ros :: init(argc, argv, "movement");
+//      ros :: NodeHandle n;
+//      // subscribe to turtle's pose topic
+//      pose_sub = n.subscribe<turtlesim :: Pose>("/turtle1/pose", 1000, poseCallback);
+//      // publisher for velocity of turtle
+//      vel_pub = n.advertise<geometry_msgs :: Twist>("/turtle1/cmd_vel", 1000);
+//      // loop.sleep() will produce a delay of 0.1 sec i.e. 10Hz frequency
+//      ros :: Rate loop_rate(10);
+//
+//      turtlesim :: Pose goal_pose;
+//      goal_pose.x = (double)4;
+//      goal_pose.y = (double)1;
+//      moveToGoal(goal_pose, 1e-2);
+//      turn(310, 1e-4);
+//      return 0;
+// }
 
 // returns angle (in degrees) converted to radians
 double degreesToRadians(double theta)

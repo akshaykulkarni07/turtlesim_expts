@@ -125,6 +125,10 @@ include_directories(
 #   src/${PROJECT_NAME}/testing.cpp
 # )
 
+add_library(move_turtle
+     src/movement.cpp
+)
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -198,6 +202,10 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(movement src/movement.cpp)
-target_link_libraries(movement ${catkin_LIBRARIES})
-add_dependencies(movement turtlesim_expts_generate_messages_cpp)
+# add_executable(movement src/movement.cpp)
+# target_link_libraries(movement ${catkin_LIBRARIES})
+# add_dependencies(movement turtlesim_expts_generate_messages_cpp)
+
+add_executable(haus_vom_nikolaus src/haus_vom_nikolaus.cpp)
+target_link_libraries(haus_vom_nikolaus move_turtle ${catkin_LIBRARIES})
+add_dependencies(haus_vom_nikolaus turtlesim_expts_generate_messages_cpp)
