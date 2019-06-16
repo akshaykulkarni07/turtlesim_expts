@@ -12,6 +12,7 @@
 ros :: Publisher vel_pub;
 ros :: Subscriber pose_sub;
 turtlesim :: Pose current_pose;
+double linear_error, angular_error;
 
 #endif
 
@@ -23,4 +24,5 @@ double distance(double, double, double, double);
 geometry_msgs :: Twist returnVelocity(double, double);
 void turn(double, double);
 void moveToGoal(turtlesim :: Pose, double);
+void moveToGoalPI(turtlesim :: Pose, double);
 void poseCallback(const turtlesim :: Pose :: ConstPtr&);

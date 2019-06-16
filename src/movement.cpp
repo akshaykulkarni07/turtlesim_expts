@@ -62,6 +62,31 @@ void moveToGoal(turtlesim :: Pose goal_pose, double tolerance)
      return;
 }
 
+// move to desired position using PI controller
+void moveToGoalPI(turtlesim :: Pose goal_pose, double tolerance)
+{
+     ros :: Rate loop_rate(10);
+     linear_error = 0;
+     angular_error = 0;
+     while (ros :: ok() && distance(current_pose.x, current_pose.y, goal_pose.x, goal_pose.y) > tolerance)
+     {
+          double dist = distance(current_pose.x, current_pose.y, goal_pose.x, goal_pose.y);
+          // 0.1 is used as time interval since ROS loop rate is 10 Hz
+          linear_error += (dist * 0.1);
+          double speed = dist + ((1 / 100) * linear_error);
+          double ang = atan2(goal_pose.y - current_pose.y, goal_pose.x - current_pose.x) - current_pose.theta;
+          angular_error += (ang * 0.1);
+          cout << "Linear Error Total " << linear_error << " Angular Error Total " << angular_error << endl;
+          double angular_speed = 16 * ang + ((1 / 100) * angular_error);
+          geometry_msgs :: Twist vel = returnVelocity(speed, angular_speed);
+          vel_pub.publish(vel);
+          loop_rate.sleep();
+          ros :: spinOnce();
+     }
+     cout << "Reached goal position" << endl;
+     return;
+}
+
 // returns a Twist variable with desired velocity parameters
 geometry_msgs :: Twist returnVelocity(double speed, double angular_speed)
 {
