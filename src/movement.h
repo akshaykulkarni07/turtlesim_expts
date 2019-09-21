@@ -6,6 +6,7 @@
 #include <math.h>
 #include <sstream>
 #include "turtlesim/Pose.h"
+#include "turtlesim/TeleportAbsolute.h"
 #include <string>
 
 // global variables declaration
