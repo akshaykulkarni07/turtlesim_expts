@@ -8,7 +8,7 @@ void poseCallback(const turtlesim :: Pose :: ConstPtr& pose)
      current_pose.theta = pose -> theta;
      current_pose.linear_velocity = pose -> linear_velocity;
      current_pose.angular_velocity = pose -> angular_velocity;
-     cout << "Current Pose : " << current_pose.x << " " << current_pose.y << endl;
+     cout << "Current Pose : " << current_pose.x << " " << current_pose.y << " " << radiansToDegrees(current_pose.theta) << endl;
      cout << "Linear Velocity : " << current_pose.linear_velocity << endl;
      cout << "Angular Velocity : " << current_pose.angular_velocity << endl;
      return;
@@ -39,6 +39,12 @@ double degreesToRadians(double theta)
      return(theta * (M_PI / 180));
 }
 
+// returns angle (in radians) converted to degrees
+double radiansToDegrees(double theta)
+{
+     return(theta * (180 / M_PI));
+}
+
 // returns distance between 2 points (x, y) and (x2, y2) in the Cartesian plane
 double distance(double x, double y, double x2, double y2)
 {
@@ -66,18 +72,25 @@ void moveToGoal(turtlesim :: Pose goal_pose, double tolerance)
 void moveToGoalPI(turtlesim :: Pose goal_pose, double tolerance)
 {
      ros :: Rate loop_rate(10);
-     linear_error = 0;
-     angular_error = 0;
+     // 0.1 is used as time interval since ROS loop rate is 10 Hz
+     double dt = 0.1;
+     double kp = 16;
+     double ki = 1e-2;
+     // double ki = 0;
+     double linear_error = 0;
+     double angular_error = 0;
      while (ros :: ok() && distance(current_pose.x, current_pose.y, goal_pose.x, goal_pose.y) > tolerance)
      {
           double dist = distance(current_pose.x, current_pose.y, goal_pose.x, goal_pose.y);
-          // 0.1 is used as time interval since ROS loop rate is 10 Hz
-          linear_error += (dist * 0.1);
-          double speed = dist + ((1 / 100) * linear_error);
+          linear_error += (dist * dt);
+          double speed = dist + (ki * linear_error);
           double ang = atan2(goal_pose.y - current_pose.y, goal_pose.x - current_pose.x) - current_pose.theta;
-          angular_error += (ang * 0.1);
+          // double ang = atan2(goal_pose.y - current_pose.y, goal_pose.x - current_pose.x);
+          // double ang = current_pose.theta - degreesToRadians(goal_pose.theta);
+          angular_error += (ang * dt);
           cout << "Linear Error Total " << linear_error << " Angular Error Total " << angular_error << endl;
-          double angular_speed = 16 * ang + ((1 / 100) * angular_error);
+          double angular_speed = kp * ang + ((1 / 100) * angular_error);
+          cout << "Angular Speed " << angular_speed << endl;
           geometry_msgs :: Twist vel = returnVelocity(speed, angular_speed);
           vel_pub.publish(vel);
           loop_rate.sleep();
@@ -109,6 +122,30 @@ void turn(double angle, double tolerance)
      while (ros :: ok() && abs(angle_rad - current_pose.theta) > tolerance)
      {
           geometry_msgs :: Twist vel = returnVelocity(0, kp * (angle_rad - current_pose.theta));
+          vel_pub.publish(vel);
+          ros :: spinOnce();
+          loop_rate.sleep();
+     }
+     cout << "reached goal angle" << endl;
+     return;
+}
+
+// turtle rotates to goal angle using PI controller
+void turnPI(double angle, double tolerance)
+{
+     ros :: Rate loop_rate(10);
+     double kp = 4;
+     double ki = 1e-4;
+     // double ki = 0;
+     double angular_error = 0;
+     double angle_rad = degreesToRadians(angle);
+     while (ros :: ok() && abs(angle_rad - current_pose.theta) > tolerance)
+     {
+          double prop_err = angle_rad - current_pose.theta;
+          // integral error has to be multiplied with dt = 0.1 seconds
+          // as that is the ROS rate
+          angular_error += prop_err * 0.1;
+          geometry_msgs :: Twist vel = returnVelocity(0, kp * prop_err + ki * angular_error);
           vel_pub.publish(vel);
           ros :: spinOnce();
           loop_rate.sleep();

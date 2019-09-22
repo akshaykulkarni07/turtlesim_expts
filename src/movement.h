@@ -21,9 +21,11 @@ using namespace std;
 
 // function declarations
 double degreesToRadians(double);
+double radiansToDegrees(double);
 double distance(double, double, double, double);
 geometry_msgs :: Twist returnVelocity(double, double);
 void turn(double, double);
+void turnPI(double, double);
 void moveToGoal(turtlesim :: Pose, double);
 void moveToGoalPI(turtlesim :: Pose, double);
 void poseCallback(const turtlesim :: Pose :: ConstPtr&);

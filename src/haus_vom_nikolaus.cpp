@@ -34,39 +34,35 @@ int main(int argc, char **argv)
 
      goal_pose.x = (double)5;
      goal_pose.y = (double)1;
-     moveToGoal(goal_pose, 1e-2);
-     turn(135, 1e-4);
+     moveToGoalPI(goal_pose, 1e-2);
+     turnPI(135, 1e-2);
      goal_pose.x = (double)1;
      goal_pose.y = (double)5;
-     moveToGoal(goal_pose, 1e-2);
-     turn(0, 1e-4);
+     moveToGoalPI(goal_pose, 1e-2);
+     turnPI(0, 1e-2);
      goal_pose.x = (double)5;
      goal_pose.y = (double)5;
-     moveToGoal(goal_pose, 1e-2);
-     turn(-135, 1e-4);
+     moveToGoalPI(goal_pose, 1e-2);
+     turnPI(-135, 1e-2);
      goal_pose.x = (double)1;
      goal_pose.y = (double)1;
-     moveToGoal(goal_pose, 1e-2);
-     turn(90, 1e-4);
+     moveToGoalPI(goal_pose, 1e-2);
+     turnPI(90, 1e-2);
      goal_pose.x = (double)1;
      goal_pose.y = (double)5;
-     moveToGoal(goal_pose, 1e-2);
-     turn(45, 1e-4);
+     moveToGoalPI(goal_pose, 1e-2);
+     turnPI(45, 1e-2);
      goal_pose.x = (double)3;
      goal_pose.y = (double)7;
-     moveToGoal(goal_pose, 1e-2);
-     turn(-45, 1e-4);
+     moveToGoalPI(goal_pose, 1e-2);
+     turnPI(-45, 1e-2);
      goal_pose.x = (double)5;
      goal_pose.y = (double)5;
-     moveToGoal(goal_pose, 1e-2);
-     turn(-90, 1e-4);
+     moveToGoalPI(goal_pose, 1e-2);
+     turnPI(-90, 1e-2);
      goal_pose.x = (double)5;
      goal_pose.y = (double)1;
-     moveToGoal(goal_pose, 1e-2);
-
-     // goal_pose.x = (double)5.44444444;
-     // goal_pose.y = (double)1;
-     // moveToGoal(goal_pose, 1e-4);
+     moveToGoalPI(goal_pose, 1e-2);
 
      _end = ros :: WallTime :: now();
 
